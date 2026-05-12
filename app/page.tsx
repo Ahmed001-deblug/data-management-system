@@ -14,19 +14,18 @@ export default function Home() {
     const { data, error } = await supabase
       .from("students")
       .select("*")
-      .ilike("matric_number", matricNumber.trim());
+      .eq("matric_number", matricNumber.trim())
+      .single();
 
     setLoading(false);
 
-    console.log(data);
-    console.log(error);
-
-    if (!data || data.length === 0) {
+    if (error || !data) {
       alert("Student not found");
+      setStudent(null);
       return;
     }
 
-    setStudent(data[0]);
+    setStudent(data);
   };
 
   return (
@@ -37,25 +36,30 @@ export default function Home() {
         justifyContent: "center",
         alignItems: "center",
         background:
-          "linear-gradient(to bottom right, #0f172a, #1e3a8a)",
-        color: "white",
-        padding: "20px",
+          "linear-gradient(to right, #0f172a, #1e3a8a, #2563eb)",
       }}
     >
       <div
         style={{
-          width: "400px",
-          background: "#1e293b",
+          background: "#111827",
           padding: "30px",
-          borderRadius: "20px",
-          boxShadow: "0 0 30px rgba(0,0,0,0.4)",
+          borderRadius: "15px",
+          width: "350px",
+          color: "white",
+          boxShadow: "0 0 20px rgba(0,0,0,0.3)",
         }}
       >
-        <h1 style={{ fontSize: "50px", marginBottom: "10px" }}>
+        <h1
+          style={{
+            fontSize: "40px",
+            marginBottom: "10px",
+            fontWeight: "bold",
+          }}
+        >
           Student Portal
         </h1>
 
-        <p style={{ marginBottom: "30px", color: "#cbd5e1" }}>
+        <p style={{ marginBottom: "20px", color: "#d1d5db" }}>
           Search student records using matric number
         </p>
 
@@ -66,10 +70,10 @@ export default function Home() {
           onChange={(e) => setMatricNumber(e.target.value)}
           style={{
             width: "100%",
-            padding: "15px",
+            padding: "12px",
             borderRadius: "10px",
             border: "none",
-            marginBottom: "20px",
+            marginBottom: "15px",
             fontSize: "16px",
           }}
         />
@@ -78,12 +82,12 @@ export default function Home() {
           onClick={searchStudent}
           style={{
             width: "100%",
-            padding: "15px",
+            padding: "12px",
             borderRadius: "10px",
             border: "none",
             background: "#2563eb",
             color: "white",
-            fontSize: "18px",
+            fontSize: "16px",
             cursor: "pointer",
           }}
         >
@@ -93,21 +97,20 @@ export default function Home() {
         {student && (
           <div
             style={{
-              marginTop: "30px",
-              background: "#0f172a",
-              padding: "20px",
-              borderRadius: "15px",
+              marginTop: "20px",
+              background: "#1f2937",
+              padding: "15px",
+              borderRadius: "10px",
             }}
           >
-            <h2>Student Details</h2>
+            <h2 style={{ marginBottom: "10px" }}>Student Details</h2>
 
             <p>
               <strong>Name:</strong> {student.full_name}
             </p>
 
             <p>
-              <strong>Matric Number:</strong>{" "}
-              {student.matric_number}
+              <strong>Matric Number:</strong> {student.matric_number}
             </p>
 
             <p>
