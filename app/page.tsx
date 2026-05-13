@@ -14,7 +14,7 @@ export default function Home() {
     const { data, error } = await supabase
       .from("students")
       .select("*")
-      .eq("matric_number", matricNumber.trim())
+      .ilike("matric_number", `%${matricNumber.trim()}%`)
       .single();
 
     setLoading(false);
@@ -36,14 +36,14 @@ export default function Home() {
         justifyContent: "center",
         alignItems: "center",
         background:
-          "linear-gradient(to right, #0f172a, #1e3a8a, #2563eb)",
+          "linear-gradient(to right, #0f172a, #1e3a8a)",
       }}
     >
       <div
         style={{
           background: "#111827",
           padding: "30px",
-          borderRadius: "15px",
+          borderRadius: "12px",
           width: "350px",
           color: "white",
           boxShadow: "0 0 20px rgba(0,0,0,0.3)",
@@ -51,9 +51,9 @@ export default function Home() {
       >
         <h1
           style={{
-            fontSize: "40px",
-            marginBottom: "10px",
+            fontSize: "32px",
             fontWeight: "bold",
+            marginBottom: "10px",
           }}
         >
           Student Portal
@@ -71,10 +71,10 @@ export default function Home() {
           style={{
             width: "100%",
             padding: "12px",
-            borderRadius: "10px",
+            borderRadius: "8px",
             border: "none",
             marginBottom: "15px",
-            fontSize: "16px",
+            outline: "none",
           }}
         />
 
@@ -83,15 +83,15 @@ export default function Home() {
           style={{
             width: "100%",
             padding: "12px",
-            borderRadius: "10px",
+            borderRadius: "8px",
             border: "none",
             background: "#2563eb",
             color: "white",
-            fontSize: "16px",
             cursor: "pointer",
+            fontWeight: "bold",
           }}
         >
-          {loading ? "Searching..." : "Search Student"}
+          {loading ? "Searching..." : "Search"}
         </button>
 
         {student && (
@@ -100,21 +100,15 @@ export default function Home() {
               marginTop: "20px",
               background: "#1f2937",
               padding: "15px",
-              borderRadius: "10px",
+              borderRadius: "8px",
             }}
           >
-            <h2 style={{ marginBottom: "10px" }}>Student Details</h2>
-
             <p>
               <strong>Name:</strong> {student.full_name}
             </p>
 
             <p>
               <strong>Matric Number:</strong> {student.matric_number}
-            </p>
-
-            <p>
-              <strong>Level:</strong> {student.level}
             </p>
 
             <p>
