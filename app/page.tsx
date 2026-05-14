@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "./lib/supabase";
 
 export default function Home() {
   const [matricNumber, setMatricNumber] = useState("");
@@ -11,21 +10,18 @@ export default function Home() {
   const searchStudent = async () => {
     setLoading(true);
 
-    const { data, error } = await supabase
-      .from("students")
-      .select("*")
-      .ilike("matric_number", `%${matricNumber.trim()}%`)
-      .single();
+    setTimeout(() => {
+      setStudent({
+        full_name: "Ahmed Mustafa",
+        matric_number: "22/03sen043",
+        department: "Computer Science",
+        level: "300",
+        course: "Big Data Analytics",
+        email: "ahmed@student.com",
+      });
 
-    setLoading(false);
-
-    if (error || !data) {
-      alert("Student not found");
-      setStudent(null);
-      return;
-    }
-
-    setStudent(data);
+      setLoading(false);
+    }, 1000);
   };
 
   return (
@@ -35,23 +31,24 @@ export default function Home() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background:
-          "linear-gradient(to right, #0f172a, #1e3a8a)",
+        background: "linear-gradient(to right, #0f172a, #2563eb)",
+        padding: "20px",
       }}
     >
       <div
         style={{
           background: "#111827",
           padding: "30px",
-          borderRadius: "12px",
-          width: "350px",
+          borderRadius: "16px",
+          width: "100%",
+          maxWidth: "420px",
           color: "white",
-          boxShadow: "0 0 20px rgba(0,0,0,0.3)",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
         }}
       >
         <h1
           style={{
-            fontSize: "32px",
+            fontSize: "40px",
             fontWeight: "bold",
             marginBottom: "10px",
           }}
@@ -59,7 +56,12 @@ export default function Home() {
           Student Portal
         </h1>
 
-        <p style={{ marginBottom: "20px", color: "#d1d5db" }}>
+        <p
+          style={{
+            color: "#d1d5db",
+            marginBottom: "20px",
+          }}
+        >
           Search student records using matric number
         </p>
 
@@ -71,24 +73,26 @@ export default function Home() {
           style={{
             width: "100%",
             padding: "12px",
-            borderRadius: "8px",
+            borderRadius: "10px",
             border: "none",
             marginBottom: "15px",
             outline: "none",
+            fontSize: "16px",
           }}
         />
 
         <button
           onClick={searchStudent}
+          disabled={loading}
           style={{
             width: "100%",
             padding: "12px",
-            borderRadius: "8px",
+            borderRadius: "10px",
             border: "none",
             background: "#2563eb",
             color: "white",
+            fontSize: "16px",
             cursor: "pointer",
-            fontWeight: "bold",
           }}
         >
           {loading ? "Searching..." : "Search"}
@@ -97,18 +101,38 @@ export default function Home() {
         {student && (
           <div
             style={{
-              marginTop: "20px",
+              marginTop: "25px",
               background: "#1f2937",
-              padding: "15px",
-              borderRadius: "8px",
+              padding: "20px",
+              borderRadius: "12px",
             }}
           >
+            <h2
+              style={{
+                fontSize: "24px",
+                fontWeight: "bold",
+                marginBottom: "15px",
+              }}
+            >
+              Student Details
+            </h2>
+
             <p>
               <strong>Name:</strong> {student.full_name}
             </p>
 
             <p>
-              <strong>Matric Number:</strong> {student.matric_number}
+              <strong>Matric Number:</strong>{" "}
+              {student.matric_number}
+            </p>
+
+            <p>
+              <strong>Department:</strong>{" "}
+              {student.department}
+            </p>
+
+            <p>
+              <strong>Level:</strong> {student.level}
             </p>
 
             <p>
