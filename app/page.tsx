@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "./lib/supabase";
 
 export default function Home() {
   const [matricNumber, setMatricNumber] = useState("");
@@ -8,60 +9,36 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
 
   const searchStudent = async () => {
+    if (!matricNumber) {
+      alert("Please enter matric number");
+      return;
+    }
+
     setLoading(true);
 
-    setTimeout(() => {
-      setStudent({
-        full_name: "Ahmed Mustafa",
-        matric_number: "22/03sen043",
-        department: "Computer Science",
-        level: "300",
-        course: "Big Data Analytics",
-        email: "ahmed@student.com",
-      });
+    const { data, error } = await supabase
+      .from("students")
+      .select("*")
+      .eq("matric_number", matricNumber.trim())
+      .single();
 
-      setLoading(false);
-    }, 1000);
+    setLoading(false);
+
+    if (error || !data) {
+      alert("Student not found");
+      setStudent(null);
+      return;
+    }
+
+    setStudent(data);
   };
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "linear-gradient(to right, #0f172a, #2563eb)",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          background: "#111827",
-          padding: "30px",
-          borderRadius: "16px",
-          width: "100%",
-          maxWidth: "420px",
-          color: "white",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
-        }}
-      >
-        <h1
-          style={{
-            fontSize: "40px",
-            fontWeight: "bold",
-            marginBottom: "10px",
-          }}
-        >
-          Student Portal
-        </h1>
+    <main className="min-h-screen bg-gradient-to-r from-blue-700 to-blue-500 flex items-center justify-center p-4">
+      <div className="bg-black/80 p-8 rounded-2xl shadow-2xl w-full max-w-md text-white">
+        <h1 className="text-4xl font-bold mb-3">Student Portal</h1>
 
-        <p
-          style={{
-            color: "#d1d5db",
-            marginBottom: "20px",
-          }}
-        >
+        <p className="mb-6 text-gray-300">
           Search student records using matric number
         </p>
 
@@ -70,50 +47,20 @@ export default function Home() {
           placeholder="Enter matric number"
           value={matricNumber}
           onChange={(e) => setMatricNumber(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "10px",
-            border: "none",
-            marginBottom: "15px",
-            outline: "none",
-            fontSize: "16px",
-          }}
+          className="w-full p-3 rounded-lg text-black mb-4 outline-none"
         />
 
         <button
           onClick={searchStudent}
           disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "10px",
-            border: "none",
-            background: "#2563eb",
-            color: "white",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
+          className="w-full bg-blue-600 hover:bg-blue-700 transition-all p-3 rounded-lg font-semibold"
         >
           {loading ? "Searching..." : "Search"}
         </button>
 
         {student && (
-          <div
-            style={{
-              marginTop: "25px",
-              background: "#1f2937",
-              padding: "20px",
-              borderRadius: "12px",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "24px",
-                fontWeight: "bold",
-                marginBottom: "15px",
-              }}
-            >
+          <div className="mt-6 bg-gray-900 p-5 rounded-xl">
+            <h2 className="text-2xl font-bold mb-4">
               Student Details
             </h2>
 
@@ -122,13 +69,11 @@ export default function Home() {
             </p>
 
             <p>
-              <strong>Matric Number:</strong>{" "}
-              {student.matric_number}
+              <strong>Matric Number:</strong> {student.matric_number}
             </p>
 
             <p>
-              <strong>Department:</strong>{" "}
-              {student.department}
+              <strong>Department:</strong> {student.department}
             </p>
 
             <p>
